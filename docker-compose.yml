@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  api:
+    env_file:
+      - .env
+    build: .
+    environment:
+      - PYTHONPATH=/app/src
+      - DATABASE_URL=postgresql://user:password@db:5432/leetcode_compiler
+      - DOCKER_HOST=tcp://host.docker.internal:2375
+    ports:
+      - "5002:7000"
+    depends_on:
+      - db
+      - redis
+    command: python -m src.api.main
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_DB: leetcode_compiler
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d leetcode_compiler"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:6.2
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    environment:
+      - PYTHONPATH=/app/src
+      - DOCKER_HOST=tcp://host.docker.internal:2375
+    command: python -u src/api/worker.py
+    depends_on:
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_started
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  cpp:
+    build:
+      context: ./docker/cpp
+      dockerfile: Dockerfile
+    command: tail -f /dev/null
+    depends_on:
+      - api
+
+  java:
+    build:
+      context: ./docker/java
+      dockerfile: Dockerfile
+    volumes:
+      - ./docker/java:/app
+    command: tail -f /dev/null
+    depends_on:
+      - api
+
+  node:
+    build:
+      context: ./docker/nodejs
+      dockerfile: Dockerfile
+    command: tail -f /dev/null
+    depends_on:
+      - api
+
+  python:
+    build:
+      context: ./docker/python
+      dockerfile: Dockerfile
+    command: tail -f /dev/null
+    depends_on:
+      - api
+
+volumes:
+  db_data:
