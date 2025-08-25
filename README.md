@@ -13,21 +13,21 @@ A simplified code execution service that supports Python, JavaScript, C++, and J
 ## Quick Start
 
 1. **Start the services:**
-   \`\`\`bash
+   ```bash
    docker-compose up -d
-   \`\`\`
+   ```
 
 2. **Test the API:**
-   \`\`\`bash
+   ```bash
    python test_api.py
-   \`\`\`
+   ```
 
 3. **Execute code directly:**
-   \`\`\`bash
+   ```bash
    curl -X POST http://localhost:5002/api/execute/direct \
      -H "Content-Type: application/json" \
      -d '{"code": "print(\"Hello World!\")", "language": "python"}'
-   \`\`\`
+   ```
 
 ## API Endpoints
 
@@ -46,16 +46,16 @@ A simplified code execution service that supports Python, JavaScript, C++, and J
 
 ## Example Request
 
-\`\`\`json
+```json
 {
   "code": "print('Hello World!')",
   "language": "python"
 }
-\`\`\`
+```
 
 ## Example Response
 
-\`\`\`json
+```json
 {
   "status": "success",
   "output": "Hello World!",
@@ -63,7 +63,7 @@ A simplified code execution service that supports Python, JavaScript, C++, and J
   "execution_time": 0.123,
   "execution_id": "uuid-here"
 }
-\`\`\`
+```
 
 ## Development
 
