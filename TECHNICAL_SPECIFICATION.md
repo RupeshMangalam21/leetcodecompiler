@@ -8,7 +8,7 @@ The LeetCode Compiler is a distributed code execution service designed to safely
 
 ### System Components
 
-\`\`\`
+```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Client/UI     │───▶│   Flask API     │───▶│   Redis Queue   │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
@@ -24,7 +24,7 @@ The LeetCode Compiler is a distributed code execution service designed to safely
                                               │ Docker Language │
                                               │   Containers    │
                                               └─────────────────┘
-\`\`\`
+```
 
 ### Core Services
 
@@ -117,16 +117,16 @@ The LeetCode Compiler is a distributed code execution service designed to safely
 ## Data Flow
 
 ### Synchronous Execution (Direct)
-\`\`\`
+```
 Client Request → API Validation → Docker Execution → Response
-\`\`\`
+```
 
 ### Asynchronous Execution (Queued)
-\`\`\`
+```
 Client Request → API Validation → Redis Queue → Job ID Response
                                       ↓
 Worker Process → Docker Execution → Result Storage → Client Polling
-\`\`\`
+```
 
 ## Error Handling
 
@@ -137,14 +137,14 @@ Worker Process → Docker Execution → Result Storage → Client Polling
 4. **System Errors**: Container failures, resource exhaustion
 
 ### Error Response Format
-\`\`\`json
+```json
 {
   "status": "error|timeout|failure",
   "error": "Error description",
   "execution_id": "uuid",
   "execution_time": 0.0
 }
-\`\`\`
+```
 
 ## Performance Characteristics
 
@@ -194,15 +194,15 @@ Worker Process → Docker Execution → Result Storage → Client Polling
 ## API Specification
 
 ### Request Format
-\`\`\`json
+```json
 {
   "code": "print('Hello World')",
   "language": "python"
 }
-\`\`\`
+```
 
 ### Response Format
-\`\`\`json
+```json
 {
   "status": "success",
   "output": "Hello World",
@@ -210,7 +210,7 @@ Worker Process → Docker Execution → Result Storage → Client Polling
   "execution_time": 0.123,
   "execution_id": "550e8400-e29b-41d4-a716-446655440000"
 }
-\`\`\`
+```
 
 ### HTTP Status Codes
 - `200`: Successful execution
@@ -222,7 +222,7 @@ Worker Process → Docker Execution → Result Storage → Client Polling
 
 ## File Structure
 
-\`\`\`
+```
 leetcode-compiler/
 ├── src/
 │   ├── api/
@@ -240,3 +240,4 @@ leetcode-compiler/
 ├── Dockerfile              # API server image
 ├── Dockerfile.worker       # Worker process image
 └── requirements.txt        # Python dependencies
+```
